@@ -1,3 +1,5 @@
 ipykernel
 pandas
 openpyxl
+matplotlib
+seaborn
