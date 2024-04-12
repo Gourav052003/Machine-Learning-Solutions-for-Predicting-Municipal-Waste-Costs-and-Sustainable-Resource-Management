@@ -5,7 +5,74 @@ import pandas as pd
 
 model = pickle.load(open('bin/LGBM_model','rb'))
 transformer = pickle.load(open('bin/transformer_file','rb'))
+WASTE_GENERATION_df = pd.read_csv("data/cleaned_data.csv")
 
+numerical_features = ["tc","cres","csor","area","pop","alt","pden","organic","paper","glass","wood","metal","plastic","texile","wage"]
+categorical_features = ["region","sea","urb","d_fee","sample"]
+
+data_types = ["str","float","float","float","float","int","float","float","float","float","int","int","float","float","float","float","float","float","float","float"]    
+
+def random_sample_replacement(data_row):
+    
+    for feature in numerical_features:
+        
+        if data_row[feature].values[0] == "":
+            
+            fill_value = WASTE_GENERATION_df[feature].dropna().sample(1).values[0]
+            data_row[feature] = str(fill_value)
+            
+    return data_row  
+
+
+def outlier_treatment(data_row):
+    
+    
+    for feature in numerical_features:
+        
+        q1 = np.percentile(WASTE_GENERATION_df[feature],25)
+        q3 = np.percentile(WASTE_GENERATION_df[feature],75)
+        
+        iqr = q3-q1
+        
+        l = q1-(1.5*iqr)
+        u = q3+(1.5*iqr)
+        
+    
+        median = int(np.median(WASTE_GENERATION_df[feature].values))
+        mean = int(np.mean(WASTE_GENERATION_df[feature].values))
+        population = None
+        
+        if mean>median:
+            population = WASTE_GENERATION_df[(WASTE_GENERATION_df[feature]>=np.percentile(WASTE_GENERATION_df[feature],20)) &
+                                             (WASTE_GENERATION_df[feature]<=np.percentile(WASTE_GENERATION_df[feature],45))]
+
+        else:
+            population = WASTE_GENERATION_df[(WASTE_GENERATION_df[feature]>=np.percentile(WASTE_GENERATION_df[feature],60)) & 
+                                             (WASTE_GENERATION_df[feature]<=np.percentile(WASTE_GENERATION_df[feature],85))]
+
+     
+        data_value = float(data_row[feature].values[0])
+        print(data_value)
+        
+        if  data_value<l or data_value>u:
+            data_row[feature] = population[feature].sample(1)[0]
+        
+                  
+    return data_row
+
+
+def data_type_parsing(data_row):
+    
+    features = data_row.columns
+    
+    for data_type,feature in zip(data_types,features):
+        print(feature)
+        if data_type == "float":
+            data_row[feature] = data_row[feature].astype(float)
+        elif data_type == "int": 
+            data_row[feature] = data_row[feature].astype(int)  
+    
+    return data_row
 
 app = Flask(__name__)
 
@@ -13,32 +80,46 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+
 @app.route('/predict',methods=['POST'])
 def predict_placement():
      
     region = str(request.form.get('region'))
-    tc = float(request.form.get('tc'))
-    cres = float(request.form.get('cres'))
-    csor = float(request.form.get('csor'))
-    area = float(request.form.get('area'))
-    pop = int(request.form.get('pop'))
-    alt = float(request.form.get('alt'))
-    sea = float(request.form.get('sea'))
-    pden = float(request.form.get('pden'))
-    urb = float(request.form.get('urb'))
-    d_fee = int(request.form.get('d_fee'))
-    sample = int(request.form.get('sample'))
-    organic = float(request.form.get('organic'))
-    paper = float(request.form.get('paper'))
-    glass = float(request.form.get('glass'))
-    wood = float(request.form.get('wood'))
-    metal = float(request.form.get('metal'))
-    plastic = float(request.form.get('plastic'))
-    texile = float(request.form.get('texile'))
-    wage = float(request.form.get('wage'))
+        
+    tc = request.form.get('tc')
+    
+    cres = request.form.get('cres')
+    csor = request.form.get('csor')
+    area = request.form.get('area')
+    pop = request.form.get('pop')
+    alt = request.form.get('alt')
+    
+    sea = request.form.get('sea')
+    
+    pden = request.form.get('pden')
+    
+    urb = request.form.get('urb')
+    d_fee = request.form.get('d_fee')
+    sample = request.form.get('sample')
+    
+    organic = request.form.get('organic')
+    paper = request.form.get('paper')
+    glass = request.form.get('glass')
+    wood = request.form.get('wood')
+    metal = request.form.get('metal')
+    plastic = request.form.get('plastic')
+    texile = request.form.get('texile')
+    wage = request.form.get('wage')
+    
+    
     
     data = pd.DataFrame(data = np.array([region,tc,cres,csor,area,pop,alt,sea,pden,urb,d_fee,sample,organic,paper,glass,wood,metal,plastic,texile,wage]).reshape(1,20),
     columns = ["region","tc","cres","csor","area","pop","alt","sea","pden","urb","d_fee","sample","organic","paper","glass","wood","metal","plastic","texile","wage"])
+    
+    
+    data = random_sample_replacement(data)
+    data = data_type_parsing(data)
+    data = outlier_treatment(data)
     
     transformed_data = transformer.transform(data)
     
