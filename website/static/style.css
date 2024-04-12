@@ -13,7 +13,7 @@ body {
 }
 
 .background {
-    background-image: url('../Images/bg.jpg');
+    background-image: url('Images/bg.jpg');
     background-size: cover;
     background-position: center;
     width: 100%;

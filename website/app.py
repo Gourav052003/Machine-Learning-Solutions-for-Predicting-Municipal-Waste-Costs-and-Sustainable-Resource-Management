@@ -52,8 +52,7 @@ def outlier_treatment(data_row):
 
      
         data_value = float(data_row[feature].values[0])
-        print(data_value)
-        
+               
         if  data_value<l or data_value>u:
             data_row[feature] = population[feature].sample(1)[0]
         
@@ -66,7 +65,7 @@ def data_type_parsing(data_row):
     features = data_row.columns
     
     for data_type,feature in zip(data_types,features):
-        print(feature)
+       
         if data_type == "float":
             data_row[feature] = data_row[feature].astype(float)
         elif data_type == "int": 
@@ -125,8 +124,9 @@ def predict_placement():
     
     # prediction
     result = model.predict(transformed_data)
-    
-    return render_template('results.html',result=2.718281828459045**result[0])
+    result = 2.718281828459045**result[0]
+    result = round(result,2)
+    return render_template('results.html',result=result)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5050,debug=True)
