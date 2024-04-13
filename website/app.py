@@ -128,5 +128,11 @@ def predict_placement():
     result = round(result,2)
     return render_template('results.html',result=result)
 
+@app.route('/research')
+def research():
+    return render_template('research.html')
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5050,debug=True)
+
