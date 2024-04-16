@@ -50,11 +50,11 @@ def outlier_treatment(data_row):
             population = WASTE_GENERATION_df[(WASTE_GENERATION_df[feature]>=np.percentile(WASTE_GENERATION_df[feature],60)) & 
                                              (WASTE_GENERATION_df[feature]<=np.percentile(WASTE_GENERATION_df[feature],85))]
 
-     
+        # print(population)
         data_value = float(data_row[feature].values[0])
                
         if  data_value<l or data_value>u:
-            data_row[feature] = population[feature].sample(1)[0]
+            data_row[feature] = population[feature].sample(1).values[0]
         
                   
     return data_row
