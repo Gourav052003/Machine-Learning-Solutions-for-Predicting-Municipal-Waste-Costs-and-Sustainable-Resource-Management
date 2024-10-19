@@ -107,13 +107,6 @@ The models were evaluated using the following performance metrics:
 - **Root Mean Square Error (RMSE)**: Penalizes larger errors more than smaller errors, making it useful for catching outlier predictions.
 - **R² Score**: Represents the proportion of variance in the dependent variable that can be explained by the independent variables.
 
-```python
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-mae = mean_absolute_error(y_test, y_pred)
-rmse = np.sqrt(mean_squared_error(y_test, y_pred))
-r2 = r2_score(y_test, y_pred)
-
-
 ## Installation
 
 To run this project, clone the repository and install the required dependencies:
