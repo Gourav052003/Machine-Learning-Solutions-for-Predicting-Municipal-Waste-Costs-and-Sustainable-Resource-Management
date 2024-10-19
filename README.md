@@ -116,3 +116,30 @@ git clone https://github.com/your-username/waste-management-cost-prediction.git
 cd waste-management-cost-prediction
 pip install -r requirements.txt
 ```
+## Usage
+To preprocess the dataset and train the model, follow these steps:
+```
+# Preprocess the dataset
+python preprocess_data.py --input data/municipal_waste.csv --output data/cleaned_data.csv
+
+# Train the machine learning model
+python train_model.py --dataset data/cleaned_data.csv --model xgboost
+```
+Model predictions and evaluation results will be stored in the output/ folder.
+
+## Model Performance
+The final model's performance on the test set is as follows:
+
+Mean Absolute Error (MAE): 25.34 EUR
+Root Mean Square Error (RMSE): 35.21 EUR
+R² Score: 0.78
+Feature importance analysis using SHAP reveals that population density, GDP, waste type proportions, and urbanization index are significant predictors of waste management costs.
+
+## Contributing
+We welcome contributions from the community. To contribute:
+1. Fork the repository.
+2. Create a new branch with your feature/bugfix.
+3. Submit a pull request for review.
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
