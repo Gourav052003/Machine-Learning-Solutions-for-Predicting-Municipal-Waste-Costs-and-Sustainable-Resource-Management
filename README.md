@@ -45,7 +45,7 @@ After evaluating model performance using metrics like Mean Absolute Error (MAE) 
 ## Features
 
 The dataset includes the following key features:
-'''
+
 | Variable        | Description                                              |
 |-----------------|----------------------------------------------------------|
 | `region`        | Geographic region (South, Center, North)                 |
@@ -72,4 +72,4 @@ To run this project, clone the repository and install the required dependencies:
 git clone https://github.com/your-username/waste-management-cost-prediction.git
 cd waste-management-cost-prediction
 pip install -r requirements.txt
-'''
+```
